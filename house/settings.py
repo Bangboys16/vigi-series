@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 
     'vigi2.apps.Vigi2Config',
     
-    'rest_framework'
 ]
 
 MIDDLEWARE = [
