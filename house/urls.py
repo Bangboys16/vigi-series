@@ -24,7 +24,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('vigi2.urls')),  # Adjust the URL pattern as needed
-    path('api/', include('vigi2.api.urls')),
 ]
 
 
