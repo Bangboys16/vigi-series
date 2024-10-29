@@ -33,26 +33,28 @@
     </div>
 
     <!-- Related Series Section -->
-    <div class="row mt-5" >
-        <div class="col-md-12">
-            <h3>Related Series</h3>
-            <div class="row">
-                {% for related in related_series %}
-                <div class="col-md-3" data-aos="zoom-in">
-                    <div class="card mb-3">
-                        <img src="{{ related.poster.url }}" class="card-img-top" alt="{{ related.title }} poster">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ related.title }}</h5>
-                            <a href="{% url 'series_detail' related.id %}" class="btn btn-primary btn-sm">View Series</a>
-                        </div>
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h3>Related Series</h3>
+        <div class="row">
+            {% for related in related_series %}
+            <div class="col-md-3" data-aos="zoom-in">
+                <div class="card mb-3 h-100">
+                    <div class="ratio ratio-4x3"> <!-- Bootstrap aspect ratio for consistent sizing -->
+                        <img src="{{ related.poster.url }}" class="card-img-top" alt="{{ related.title }} poster" style="object-fit: cover;">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ related.title }}</h5>
+                        <a href="{% url 'series_detail' related.id %}" class="btn btn-primary btn-sm">View Series</a>
                     </div>
                 </div>
-                {% empty %}
-                <p>No related series available.</p>
-                {% endfor %}
             </div>
+            {% empty %}
+            <p>No related series available.</p>
+            {% endfor %}
         </div>
     </div>
+</div>
 
     <!-- Comments Section -->
     <div class="row mt-5" data-aos="zoom-in">
