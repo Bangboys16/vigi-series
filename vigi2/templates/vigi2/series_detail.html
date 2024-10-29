@@ -1,0 +1,89 @@
+{% extends 'vigi2/base.html' %}
+
+{% block title %}{{ series.title }}{% endblock %}
+
+{% block content %}
+<div class="container" data-aos="zoom-in">
+    <h1 class="my-4"><strong>{{ series.title }}</strong></h1>
+    
+    <div class="row">
+        <div class="col-md-8" >
+            <img src="{{ series.poster.url }}" class="img-fluid" alt="{{ series.title }}">
+            <p>{{ series.description }}</p>
+            <p><strong>Release Date:</strong> {{ series.release_date }}</p>
+            <p><strong>Genre:</strong>
+                {% for genre in series.genres.all %}
+                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Episodes</h3>
+            <div class="list-group">
+                {% for episode in series.episodes.all %}
+                <a href="{% url 'episode_detail' series.pk episode.pk %}" class="list-group-item list-group-item-action">
+                    S{{ episode.season_number }}E{{ episode.episode_number }}: {{ episode.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Series Section -->
+    <div class="row mt-5" >
+        <div class="col-md-12">
+            <h3>Related Series</h3>
+            <div class="row">
+                {% for related in related_series %}
+                <div class="col-md-3" data-aos="zoom-in">
+                    <div class="card mb-3">
+                        <img src="{{ related.poster.url }}" class="card-img-top" alt="{{ related.title }} poster">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ related.title }}</h5>
+                            <a href="{% url 'series_detail' related.id %}" class="btn btn-primary btn-sm">View Series</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No related series available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="row mt-5" data-aos="zoom-in">
+        <div class="col-md-12">
+            <h3>Comments</h3>
+            <div id="comments-list" class="mb-4">
+                {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ comment.name|title }}</h5>
+                        <p class="card-text">{{ comment.comment }}</p>
+                        <p class="card-text"><small class="text-muted">{{ comment.created_at }}</small></p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info">No comments yet. Be the first to comment!</div>
+                {% endfor %}
+            </div>
+
+            <h4>Add a Comment</h4>
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" name="name" class="form-control" placeholder="Your name" required>
+                </div>
+                <div class="mb-3">
+                    <textarea name="comment" class="form-control" placeholder="Your comment" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

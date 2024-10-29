@@ -1,0 +1,12 @@
+{% for series in series_list %}
+<div class="col-md-4 series-item">
+    <div class="card mb-4 h-100">
+        <img src="{{ series.poster.url }}" class="card-img-top" alt="{{ series.title }} poster">
+        <div class="card-body">
+            <h5 class="card-title">{{ series.title|title }}</h5>
+            <p class="card-text">{{ series.description|truncatewords:15 }}</p>
+            <a href="{% url 'series_detail' series.id %}" class="btn btn-primary">View Series</a>
+        </div>
+    </div>
+</div>
+{% endfor %}

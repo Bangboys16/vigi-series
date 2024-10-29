@@ -1,0 +1,66 @@
+{% extends 'vigi2/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="my-4 text-center" style="font-size: 2.5rem; font-weight: bold; color: #007bff;"> <i class="fas fa-fire"></i> Featured Series</h2>
+
+    <hr>
+
+    <!-- Series Grid -->
+    <div class="row fade-up">
+        {% if series_list %}
+            {% for series in series_list %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-aos="fade-up">
+                <div class="card h-100 shadow-sm border-0" style="transition: transform 0.3s ease;">
+                    <a href="{% url 'series_detail' series.id %}">
+                        <img src="{{ series.poster.url }}" class="card-img-top" alt="{{ series.title }} poster" style="border-radius: 10px; object-fit: cover; height: 350px;">
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="font-weight: bold; font-size: 1.25rem;">{{ series.title|title }}</h5>
+                        <p class="card-text text-muted">{{ series.description|truncatewords:12 }}</p>
+                        <a href="{% url 'series_detail' series.id %}" class="btn btn-primary px-4 py-2 mt-2">View Series</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p class="text-center font-weight-bold">Oops! No series found. Kindly request!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Smaller Pagination Controls -->
+    <nav aria-label="Page navigation" class="my-4">
+        <ul class="pagination justify-content-center">
+            {% if series_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ series_list.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span> <!-- Use smaller chevron -->
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in series_list.paginator.page_range %}
+                {% if series_list.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#" style="background-color: #007bff; border-color: #007bff; color: white;">{{ num }}</a>
+                    </li>
+                {% elif num > series_list.number|add:'-3' and num < series_list.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}" style="color: #007bff;">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if series_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ series_list.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span> <!-- Use smaller chevron -->
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'vigi2/base.html' %}
+
+{% block title %}{{ episode.series.title }} - S{{ episode.season_number }}E{{ episode.episode_number }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4"><strong>{{ episode.title }}</strong></h1>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 mb-4">
+            <!-- Make the video responsive -->
+            <div class="embed-responsive embed-responsive-16by9">
+                <video id="episodeVideo" class="embed-responsive-item" controls>
+                    <source src="{{ episode.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <!-- Download buttons, aligned using Bootstrap utilities -->
+            <div class="d-flex justify-content-between mt-3">
+                <a href="{{ episode.video_file.url }}" class="btn btn-success" download>Download Episode</a>
+                {% if episode.subtitle_file %}
+                    <a href="{{ episode.subtitle_file.url }}" class="btn btn-info" download>Download Subtitle</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right column with episode details and rating form -->
+        <div class="col-lg-4 col-md-10 mb-4">
+            <div class="card p-3">
+                <p><strong>Description:</strong> {{ episode.description }}</p>
+                <p><strong>Release Date:</strong> {{ episode.release_date }}</p>
+                <p><strong>Average Rating:</strong> {{ episode.rating }} ({{ episode.rating_count }} ratings)</p>
+
+                <h3>Rate this Episode</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100">Submit Rating</button>
+                </form>
+            </div>
+            <!-- Subtitles Section -->
+            <div class="mt-3">
+                <ul>
+                    {% for subtitle in series.subtitles.all %}
+                        <li><a href="{{ subtitle.file.url }}" download>{{ subtitle.language }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="mt-2">
+                <p class="text-muted">
+                    <strong>File Size:</strong> 
+                    <span class="badge badge-info">
+                        {% if episode.file_size %}
+                            {{ episode.file_size }} MB
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
