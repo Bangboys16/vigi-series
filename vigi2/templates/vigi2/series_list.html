@@ -1,0 +1,99 @@
+{% extends 'vigi2/base.html' %}
+
+{% block content %}
+
+<form class="form-inline my-2 my-lg-0 justify-content-center" method="GET" action="{% url 'series_list' %}">
+    <div class="input-group" style="width: 100%; max-width: 400px;">
+        <input class="form-control" type="search" placeholder="Search Here..." aria-label="Search" name="q" value="{{ query }}">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</form>
+
+
+<div class="container my-5">
+    <h2 class="my-4 text-center text-primary fw-bold display-6 display-md-4"> <!-- Responsive font size and Bootstrap colors -->
+        <i class="fas fa-bolt"></i> Featured Series
+    </h2>
+
+    <hr>
+
+    <!-- Series Grid -->
+    <div class="row fade-up">
+        {% if series_list %}
+            {% for series in series_list %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up"> <!-- Adjusted for responsive layout -->
+                <div class="card h-100 shadow-sm border-0">
+                    <a href="{% url 'series_detail' slug=series.slug %}">
+                        <img src="{{ series.poster.url }}" class="card-img-top rounded" alt="{{ series.title }} poster"
+                             style="object-fit: cover; height: 350px;">
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold fs-5">{{ series.title|title }}</h5> <!-- Bootstrap font size and weight -->
+                        <p class="card-text text-muted">{{ series.description|truncatewords:12 }}</p> <!-- Smaller text for description -->
+                        <a href="{% url 'series_detail' slug=series.slug %}" class="btn btn-primary mt-2 px-3">View Series
+                            {% if episode_today_count > 0 %}
+                                <span class="badge">{{ episode_today_count }}</span>
+                            {% endif %}</a>
+                        </a> <!-- Adjust button padding for better readability -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Display no results message -->
+            <div class="col-12">
+                <div class="alert alert-warning text-center mt-4" role="alert">
+                    <i class="fas fa-exclamation-circle" style="color: #9361ff;"></i>
+                    <strong>Oops!</strong> No series found for "<strong>{{ query }}</strong>" Please try another keyword.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Smaller Pagination Controls -->
+    <nav aria-label="Page navigation" class="my-4">
+        <ul class="pagination justify-content-center">
+            {% if series_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ series_list.previous_page_number }}&q={{ query }}" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in series_list.paginator.page_range %}
+                {% if series_list.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link bg-primary border-primary text-white">{{ num }}</a>
+                    </li>
+                {% elif num > series_list.number|add:'-3' and num < series_list.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link text-primary" href="?page={{ num }}&q={{ query }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if series_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ series_list.next_page_number }}&q={{ query }}" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<style>
+    .badge {
+            background-color: #df1a1a;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+        }
+</style>
+{% endblock %}
